@@ -6,7 +6,7 @@
     <meta name="description" content="La boutique ou tout se trouve et tout vend">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.1.1">
-    <title> {% block title %}La boutique à ludo</title>{% endblock %} 
+    <title> {% block title %}La boutique à ludo{% endblock %} </title>
         
     
 
@@ -55,6 +55,8 @@
 </header>
 
 <main role="main">
+{% if block ('carousel') is defined %}
+    
 
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -103,13 +105,13 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
-
+{% endif %}
 
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
-    <div class="container marketing">
+    <div class="container marketing {% if block ('carousel') is not defined %} mt-5 {% endif %}">
 
         <!-- Three columns of text below the carousel -->
        {% block body %}
