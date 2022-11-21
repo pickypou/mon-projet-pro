@@ -2,32 +2,49 @@
 
 namespace App\Controller;
 
+use App\Classe\Shearch;
 use App\Entity\Product;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Form\ShearchType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-    #[Route('/name-product', name: 'app_products')]
-    public function index(ManagerRegistry $doctrine): Response
+    private $entityManager;
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $repository = $doctrine->getRepository(Product::class);
-        $products = $repository->findAll();
+        $this->entityManager = $entityManager;
+    }
+    #[Route('/name-product', name: 'app_products')]
+    public function index( Request $request): Response
+    {
+        $search = new Shearch;
+        $products = $this->entityManager->getRepository(Product::class)->findAll();
+        
+
+        $form = $this->createForm(ShearchType::class, $search);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $products = $this->entityManager->getRepository(Product::class)->findWithShearch($search);
+            
+        }
 
 
         return $this->render('product/index.html.twig',[
-            'products'=>$products
+            'products'=>$products,
+            'form'=>$form->createView()
         ]);
     }
 
 
     #[Route('/produit/{slug}', name: 'app_product')]
-    public function show(ManagerRegistry $doctrine, $slug): Response
+    public function show( $slug): Response
     {
-        $repository = $doctrine->getRepository(Product::class);
-        $product = $repository->findOneBySlug($slug);
+       
+        $product = $this->entityManager->getRepository(Product::class)->findOneBySlug($slug);
         if (!$product) {
            return $this->redirectToRoute('app_products');
         }

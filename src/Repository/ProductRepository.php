@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Classe\Shearch;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,31 @@ class ProductRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * recherche qui permet recuperer les produits suivant la recherche de l'utilisateur
+     * @return Product
+     */
+    public function findWithShearch(Shearch $shearch)
+    {
+        $query = $this
+        ->createQueryBuilder('p')
+        ->select('c', 'p')
+        ->join('p.category','c');
+        
+        if (!empty($shearch->categories)) {
+            $query = $query
+            ->andWhere('c.id IN (:categories)')
+            ->setParameter('categories', $shearch->categories);
+        }
+
+        if (!empty($shearch->string)) {
+           $query = $query
+           ->andWhere('p.name LIKE :string')
+           ->setParameter('string', "%$shearch->string%");
+        }
+        return $query->getQuery()->getResult();
     }
 
 //    /**
