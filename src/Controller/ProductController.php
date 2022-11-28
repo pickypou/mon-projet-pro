@@ -22,14 +22,14 @@ class ProductController extends AbstractController
     public function index( Request $request): Response
     {
         $search = new Shearch;
-        $products = $this->entityManager->getRepository(Product::class)->findAll();
-        
-
+  
         $form = $this->createForm(ShearchType::class, $search);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $products = $this->entityManager->getRepository(Product::class)->findWithShearch($search);
             
+        }else {
+             $products = $this->entityManager->getRepository(Product::class)->findAll();
         }
 
 

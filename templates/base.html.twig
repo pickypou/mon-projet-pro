@@ -56,9 +56,14 @@
             <div class="navbar-item-custom">
             {% if app.user %}
                 <a href="{{path('app_account')}}">Mon compte ({{app.user.firstname}})</a> | <a href="{{path('app_logout')}}">Déconnexion </a>
+                  <a href="{{path('app_cart')}}">
+                  <img  src="{{asset('assets/img/shopping-cart.png')}}" height="15px" class="pe-2"  alt="mon pannier">
+                  </a>
             {% else %}
                 <a href="{{path('app_login')}}"> connexion </a> | <a href="{{path('app_register')}}">Inscription </a>
+             
             {% endif %}
+               
             </div>
         </div>
     </nav>
